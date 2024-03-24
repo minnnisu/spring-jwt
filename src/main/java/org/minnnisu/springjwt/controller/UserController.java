@@ -1,0 +1,27 @@
+package org.minnnisu.springjwt.user;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import me.benny.practice.spring.security.dto.TokenDto;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/auth")
+public class UserController {
+    private final UserService userService;
+
+
+    @PostMapping("/login")
+    public TokenDto login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
+        String username = userLoginRequestDto.getUsername();
+        String password = userLoginRequestDto.getPassword();
+        TokenDto tokenDto = userService.login(username, password);
+        System.out.println("sfsdfsdfdsf");
+        return tokenDto;
+    }
+}
