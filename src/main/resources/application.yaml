@@ -1,5 +1,3 @@
-spring.application.name=spring-jwt
-
 # logging ?? ??
 logging:
     level:
@@ -9,9 +7,8 @@ logging:
 spring:
     mvc:
         hiddenmethod:
-        filter:
-            enabled: true
-
+            filter:
+                enabled: true
 jwt:
     secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
 
