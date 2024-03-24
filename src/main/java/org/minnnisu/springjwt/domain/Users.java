@@ -30,7 +30,7 @@ public class Users implements UserDetails {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
-    public User(
+    public Users(
             String username,
             String password,
             String authority
