@@ -1,19 +1,20 @@
-package me.benny.practice.spring.security.config;
+package org.minnnisu.springjwt.config;
 
-import me.benny.practice.spring.security.jwt.JwtAuthenticationFilter;
-import me.benny.practice.spring.security.provider.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
+import org.minnnisu.springjwt.filter.JwtAuthenticationFilter;
+import org.minnnisu.springjwt.provider.JwtTokenProvider;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -25,7 +26,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -41,29 +41,32 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .httpBasic().disable()
-                .csrf().disable()
-                .headers().frameOptions().disable().and()
-//                .rememberMe().and()
-                .formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/")
-                .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/")
-                .and()
-                .authorizeRequests()
-                .antMatchers(
-                        "/",
-                        "/home",
-                        "/signup",
-                        "/login",
-                        "/auth/login",
-                        "/api/signup",
-                        "/h2-console"
-                ).permitAll()
-                .anyRequest().authenticated();
+                .csrf(AbstractHttpConfigurer::disable
+                )
+                .headers((headerConfig) ->
+                        headerConfig.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable
+                        )
+                )
+                .authorizeHttpRequests((authorizeRequests) ->
+                        authorizeRequests
+                                .requestMatchers("/", "/auth/**").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .formLogin((formLogin) ->
+                        formLogin
+                                .loginPage("/login/login")
+                                .usernameParameter("username")
+                                .passwordParameter("password")
+                                .loginProcessingUrl("/login/login-proc")
+                                .defaultSuccessUrl("/", true)
+                )
+                .logout((logoutConfig) ->
+                        logoutConfig.logoutSuccessUrl("/")
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+//                .userDetailsService(myUserDetailsService)
+        ;
+
         return http.build();
     }
 
