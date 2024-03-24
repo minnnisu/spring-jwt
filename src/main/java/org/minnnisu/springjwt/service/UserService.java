@@ -1,8 +1,12 @@
-package org.minnnisu.springjwt.user;
+package org.minnnisu.springjwt.service;
 
 import lombok.RequiredArgsConstructor;
-import me.benny.practice.spring.security.dto.TokenDto;
-import me.benny.practice.spring.security.provider.JwtTokenProvider;
+import org.minnnisu.springjwt.domain.Users;
+import org.minnnisu.springjwt.dto.TokenDto;
+import org.minnnisu.springjwt.exception.AlreadyRegisteredUserException;
+import org.minnnisu.springjwt.exception.UserNotFoundException;
+import org.minnnisu.springjwt.provider.JwtTokenProvider;
+import org.minnnisu.springjwt.repository.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -28,14 +32,14 @@ public class UserService {
      * @param password password
      * @return 유저 권한을 가지고 있는 유저
      */
-    public User signup(
+    public Users signup(
             String username,
             String password
     ) {
         if (!userRepository.findByUsername(username).isEmpty()) {
             throw new AlreadyRegisteredUserException();
         }
-        return userRepository.save(new User(username, passwordEncoder.encode(password), "ROLE_USER"));
+        return userRepository.save(new Users(username, passwordEncoder.encode(password), "ROLE_USER"));
     }
 
     /**
@@ -45,14 +49,14 @@ public class UserService {
      * @param password password
      * @return 관리자 권한을 가지고 있는 유저
      */
-    public User signupAdmin(
+    public Users signupAdmin(
             String username,
             String password
     ) {
         if (userRepository.findByUsername(username) != null) {
             throw new AlreadyRegisteredUserException();
         }
-        return userRepository.save(new User(username, passwordEncoder.encode(password), "ROLE_ADMIN"));
+        return userRepository.save(new Users(username, passwordEncoder.encode(password), "ROLE_ADMIN"));
     }
 
     @Transactional
@@ -71,11 +75,11 @@ public class UserService {
         return tokenDto;
     }
 
-    public User findByUsername(String username) {
+    public Users findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
     }
 
-    public List<User> findAll() {
+    public List<Users> findAll() {
         return userRepository.findAll();
     }
 }
