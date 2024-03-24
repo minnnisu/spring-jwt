@@ -1,4 +1,4 @@
-package org.minnnisu.springjwt.user;
+package org.minnnisu.springjwt.dto;
 
 import lombok.Data;
 
