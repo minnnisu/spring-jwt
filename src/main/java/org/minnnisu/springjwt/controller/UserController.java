@@ -1,8 +1,12 @@
-package org.minnnisu.springjwt.user;
+package org.minnnisu.springjwt.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.benny.practice.spring.security.dto.TokenDto;
+import org.minnnisu.springjwt.dto.TokenDto;
+import org.minnnisu.springjwt.dto.UserLoginRequestDto;
+import org.minnnisu.springjwt.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,11 +21,10 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public TokenDto login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
+    public ResponseEntity<TokenDto> login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         String username = userLoginRequestDto.getUsername();
         String password = userLoginRequestDto.getPassword();
         TokenDto tokenDto = userService.login(username, password);
-        System.out.println("sfsdfsdfdsf");
-        return tokenDto;
+        return new ResponseEntity<TokenDto>(tokenDto, HttpStatus.CREATED);
     }
 }
