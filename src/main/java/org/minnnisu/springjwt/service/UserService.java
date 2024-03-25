@@ -1,9 +1,12 @@
 package org.minnnisu.springjwt.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.minnnisu.springjwt.constant.ErrorCode;
 import org.minnnisu.springjwt.domain.Users;
 import org.minnnisu.springjwt.dto.TokenDto;
 import org.minnnisu.springjwt.exception.AlreadyRegisteredUserException;
+import org.minnnisu.springjwt.exception.CustomErrorException;
 import org.minnnisu.springjwt.exception.UserNotFoundException;
 import org.minnnisu.springjwt.provider.JwtTokenProvider;
 import org.minnnisu.springjwt.repository.UserRepository;
@@ -16,8 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -36,8 +41,8 @@ public class UserService {
             String username,
             String password
     ) {
-        if (!userRepository.findByUsername(username).isEmpty()) {
-            throw new AlreadyRegisteredUserException();
+        if (userRepository.findByUsername(username).isPresent()) {
+            throw new CustomErrorException(ErrorCode.DuplicatedUserNameError);
         }
         return userRepository.save(new Users(username, passwordEncoder.encode(password), "ROLE_USER"));
     }
