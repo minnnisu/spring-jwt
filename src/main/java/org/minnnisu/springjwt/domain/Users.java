@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,9 +27,6 @@ public class Users implements UserDetails {
     private String password;
     private String authority;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
 
     public Users(
             String username,
@@ -40,11 +38,8 @@ public class Users implements UserDetails {
         this.authority = authority;
     }
 
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        return Collections.singleton((GrantedAuthority) () -> authority);
     }
 
     @Override
