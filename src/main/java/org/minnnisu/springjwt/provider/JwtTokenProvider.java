@@ -10,7 +10,6 @@ import org.minnnisu.springjwt.constant.ErrorCode;
 import org.minnnisu.springjwt.constant.TokenType;
 import org.minnnisu.springjwt.domain.Users;
 import org.minnnisu.springjwt.exception.CustomErrorException;
-import org.minnnisu.springjwt.exception.UserNotFoundException;
 import org.minnnisu.springjwt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
