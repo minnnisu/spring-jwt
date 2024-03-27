@@ -13,6 +13,7 @@ import org.minnnisu.springjwt.constant.ErrorCode;
 import org.minnnisu.springjwt.exception.CustomErrorException;
 import org.minnnisu.springjwt.exception.ErrorResponseDto;
 import org.minnnisu.springjwt.provider.JwtTokenProvider;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -40,18 +41,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain chain
     ) throws ServletException, IOException {
+        if (request.getRequestURI().equals("/auth/refreshToken") && request.getMethod().equals(HttpMethod.POST.name())) {
+            chain.doFilter(request, response);
+        }
 
-        // 1. Request Header 에서 JWT 토큰 추출
-        String token = resolveToken(request);
+        String accessToken = resolveAccessToken(request);
 
-        if (token == null) {
+        if (accessToken == null) {
             chain.doFilter(request, response);
             return;
         }
 
         try {
-            jwtTokenProvider.validateToken(token);
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            jwtTokenProvider.validateAccessToken(accessToken);
+            Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
         } catch (Exception e) {
@@ -60,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     // Request Header 에서 토큰 정보 추출
-    private String resolveToken(HttpServletRequest request) {
+    private String resolveAccessToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
             return bearerToken.substring(7);
