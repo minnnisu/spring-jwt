@@ -8,6 +8,7 @@ import org.minnnisu.springjwt.handler.LoginSuccessHandler;
 import org.minnnisu.springjwt.provider.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,10 +26,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtTokenProvider);
+        return new LoginSuccessHandler(redisTemplate, jwtTokenProvider);
     }
 
     @Bean
@@ -48,7 +50,7 @@ public class SecurityConfig {
 
     @Bean
     public CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter() throws Exception {
-        CustomJsonUsernamePasswordAuthenticationFilter filter = new CustomJsonUsernamePasswordAuthenticationFilter(jwtTokenProvider);
+        CustomJsonUsernamePasswordAuthenticationFilter filter = new CustomJsonUsernamePasswordAuthenticationFilter();
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
         filter.setAuthenticationSuccessHandler(loginSuccessHandler());
         filter.setAuthenticationFailureHandler(loginFailureHandler());
@@ -72,12 +74,10 @@ public class SecurityConfig {
                                 .requestMatchers("/", "/auth/**","/api/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(customJsonUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
         ;
 
         return http.build();
     }
-
-
 }

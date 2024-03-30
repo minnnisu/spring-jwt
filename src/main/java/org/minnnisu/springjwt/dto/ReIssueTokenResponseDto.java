@@ -10,11 +10,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class ReIssueTokenResponseDto {
-    private String refreshToken;
+    private String accessToken;
 
     public static ReIssueTokenResponseDto fromDto(ReIssueTokenDto reIssueTokenDto){
         return ReIssueTokenResponseDto.builder()
-                .refreshToken(reIssueTokenDto.getToken())
+                .accessToken(reIssueTokenDto.getToken())
                 .build();
     }
 }

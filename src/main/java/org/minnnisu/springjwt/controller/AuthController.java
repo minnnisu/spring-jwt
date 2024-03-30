@@ -26,9 +26,10 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<LogoutResponseDto> logout(
+            @RequestHeader("Authorization") String accessToken,
             @RequestHeader("Authorization-refresh") String refreshToken
     ) {
-        authService.logout(refreshToken);
+        authService.logout(accessToken, refreshToken);
 
         return new ResponseEntity<>(new LogoutResponseDto(), HttpStatus.CREATED);
     }
@@ -38,6 +39,7 @@ public class AuthController {
             @RequestHeader("Authorization") String accessToken,
             @RequestHeader("Authorization-refresh") String refreshToken
     ){
+
         ReIssueTokenDto reIssueTokenDto = authService.reIssueToken(accessToken, refreshToken);
         return new ResponseEntity<>(ReIssueTokenResponseDto.fromDto(reIssueTokenDto), HttpStatus.CREATED);
     }

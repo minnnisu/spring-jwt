@@ -1,7 +1,7 @@
 # logging ?? ??
 logging:
     level:
-        root: INFO
+        root: debug
         sql: ERROR
 # Overloaded POST ??
 spring:
@@ -16,7 +16,7 @@ spring:
 jwt:
     secret: VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa
     access:
-        expiration: 30000 # 1??(60?) (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h))
+        expiration: 60000 # 1??(60?) (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h))
         header: Authorization
 
     refresh:

@@ -38,6 +38,9 @@ public enum ErrorCode {
     ExpiredAccessTokenError(
             HttpStatus.BAD_REQUEST, "만료된 AccessToken입니다."
     ),
+    NoSuchAccessTokenError(
+            HttpStatus.BAD_REQUEST, "존재하지 않은 AccessToken입니다."
+    ),
     NotValidRefreshTokenError(
             HttpStatus.BAD_REQUEST, "유효하지 않은 RefreshToken입니다."
     ),
@@ -46,6 +49,9 @@ public enum ErrorCode {
     ),
     ExpiredRefreshTokenError(
             HttpStatus.BAD_REQUEST, "만료된 RefreshToken입니다."
+    ),
+    NoSuchRefreshTokenError(
+            HttpStatus.BAD_REQUEST, "존재하지 않은 RefreshToken입니다."
     ),
     IllegalArgumentError(
             HttpStatus.BAD_REQUEST, "잘못된 값이 전달되었습니다"

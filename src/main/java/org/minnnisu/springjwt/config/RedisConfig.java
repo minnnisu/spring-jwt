@@ -25,17 +25,17 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, String> redisTemplate() {
-//        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-//        redisTemplate.setKeySerializer(new StringRedisSerializer());
-//        redisTemplate.setValueSerializer(new StringRedisSerializer());
-//        redisTemplate.setConnectionFactory(redisConnectionFactory());
-
-        // 위 코드를 StringRedisTemplate 구현체를 이용하여 간결하게 개선
-        StringRedisTemplate redisTemplate = new StringRedisTemplate();
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
-        // 트랜잭션 설정
-        redisTemplate.setEnableTransactionSupport(true);
+//        // 위 코드를 StringRedisTemplate 구현체를 이용하여 간결하게 개선
+//        StringRedisTemplate redisTemplate = new StringRedisTemplate();
+//        redisTemplate.setConnectionFactory(redisConnectionFactory());
+//
+//        // 트랜잭션 설정
+//        redisTemplate.setEnableTransactionSupport(true);
 
         return redisTemplate;
     }

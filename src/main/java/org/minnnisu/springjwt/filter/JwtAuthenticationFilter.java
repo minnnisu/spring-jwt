@@ -41,9 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain chain
     ) throws ServletException, IOException {
-        if (request.getRequestURI().equals("/auth/refreshToken") && request.getMethod().equals(HttpMethod.POST.name())) {
-            chain.doFilter(request, response);
-        }
+        log.info("JwtAuthenticationFilter 호출");
 
         String accessToken = resolveAccessToken(request);
 
@@ -58,6 +56,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
         } catch (Exception e) {
+            if (request.getRequestURI().equals("/auth/refreshToken") && request.getMethod().equals(HttpMethod.POST.name())) {
+                chain.doFilter(request, response);
+            }
+
+            if (request.getRequestURI().equals("/auth/logout") && request.getMethod().equals(HttpMethod.POST.name())) {
+                chain.doFilter(request, response);
+            }
             jwtExceptionHandler(response, e);
         }
     }
