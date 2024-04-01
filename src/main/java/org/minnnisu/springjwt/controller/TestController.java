@@ -23,27 +23,14 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class TestController {
 
-    @GetMapping("/test")
-    public ResponseEntity<String> test(@AuthenticationPrincipal Users users){
+    @GetMapping("/test/user")
+    public ResponseEntity<String> testAuthenticatedUser(@AuthenticationPrincipal Users users){
         return new ResponseEntity<>("로그인한 유저: " + users.getUsername(), HttpStatus.OK);
     }
 
-//    @GetMapping("/test/save")
-//    public ResponseEntity<String> testSave(){
-//        valueOperations.set("a", "b");
-//
-//        return new ResponseEntity<>("성공", HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/test/get")
-//    public ResponseEntity<String> testGet(){
-//        log.info("호출");
-//        if ("b".equals(valueOperations.get("a"))) {
-//            // RefreshToken이 탈취 당한 것으로 판단
-//            valueOperations.getAndDelete("a");
-//            throw new CustomErrorException(ErrorCode.NoSuchAccessTokenError);
-//        }
-//
-//        return new ResponseEntity<>("성공", HttpStatus.OK);
-//    }
+    @GetMapping("/test/noUser")
+    public ResponseEntity<String> testNoAuthenticatedUser(){
+        return new ResponseEntity<>("로그인 하지 않은 유저", HttpStatus.OK);
+    }
+
 }
