@@ -98,18 +98,6 @@ public class JwtTokenProvider {
         }
     }
 
-    public void validateRefreshToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException | UnsupportedJwtException e) {
-            throw new CustomErrorException(ErrorCode.NotValidRefreshTokenError);
-        } catch (ExpiredJwtException e) {
-            throw new CustomErrorException(ErrorCode.ExpiredRefreshTokenError);
-        } catch (IllegalArgumentException e) {
-            throw new CustomErrorException(ErrorCode.IllegalArgumentError);
-        }
-    }
-
 
     public boolean isExpiredAccessToken(String accessToken){
         try{
@@ -132,13 +120,6 @@ public class JwtTokenProvider {
             return e.getClaims();
         }
     }
-
-    public void responseAccessToken(HttpServletResponse response, String accessToken){
-        response.setStatus(HttpStatus.OK.value());
-
-        response.setHeader(accessHeader, accessToken);
-    }
-
     public void responseAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken){
         response.setStatus(HttpStatus.OK.value());
 
