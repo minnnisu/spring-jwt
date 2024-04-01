@@ -115,8 +115,6 @@ public class JwtTokenProvider {
         return false;
     }
 
-
-
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
@@ -136,24 +134,6 @@ public class JwtTokenProvider {
         } catch (Exception ex) {
             log.error(ex.getMessage());
         }
-    }
-
-    public String resolveToken(TokenType tokenType, HttpServletRequest request) {
-        String bearerToken = "";
-
-        if (tokenType == TokenType.ACCESS_TOKEN){
-            bearerToken = request.getHeader("Authorization");
-        }
-
-        if (tokenType == TokenType.REFRESH_TOKEN){
-            bearerToken = request.getHeader("Authorization-refresh");
-        }
-
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-            return bearerToken.substring(7);
-        }
-
-        return null;
     }
 
     public String resolveToken(String value) {
