@@ -1,5 +1,6 @@
 package org.minnnisu.springjwt.provider;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -9,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.minnnisu.springjwt.constant.ErrorCode;
 import org.minnnisu.springjwt.constant.TokenType;
 import org.minnnisu.springjwt.domain.Users;
+import org.minnnisu.springjwt.dto.LoginResponseDto;
 import org.minnnisu.springjwt.exception.CustomErrorException;
+import org.minnnisu.springjwt.exception.ErrorResponseDto;
 import org.minnnisu.springjwt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
 
@@ -120,11 +124,18 @@ public class JwtTokenProvider {
             return e.getClaims();
         }
     }
-    public void responseAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken){
+    public void responseAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) throws IOException {
         response.setStatus(HttpStatus.OK.value());
-
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         response.setHeader(accessHeader, accessToken);
         response.setHeader(refreshHeader, refreshToken);
+        try {
+            String json = new ObjectMapper().writeValueAsString(new LoginResponseDto());
+            response.getWriter().write(json);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+        }
     }
 
     public String resolveToken(TokenType tokenType, HttpServletRequest request) {
